@@ -13,7 +13,7 @@
   "version": "1.0.0",
   "scripts": {
     "dev": "tsx watch src/bot.ts",
-    "start": "node dist/bot.ts",
+    "start": "node dist/bot.js",
     "build": "tsup src/bot.ts --minify"
   },
   "dependencies": {
