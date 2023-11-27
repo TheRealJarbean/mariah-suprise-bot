@@ -5,4 +5,4 @@ COPY package-lock.json package-lock.json
 RUN npm install
 COPY . .
 RUN tsc
-CMD ["node", "./dist/bot.js"]
+CMD ["node", "./dist/bot.cjs"]
