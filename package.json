@@ -1,5 +1,6 @@
 {
   "devDependencies": {
+    "@discordjs/voice": "^0.16.1",
     "discord.js": "^14.14.1",
     "dotenv": "^16.3.1",
     "eslint": "^8.54.0",
