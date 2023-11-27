@@ -1,6 +1,6 @@
 {
   "dev": "tsx watch src/bot.ts",
-  "start": "node dist/bot.js",
+  "start": "node dist/bot.ts",
   "build": "tsup src/bot.ts --minify",
   "devDependencies": {
     "discord.js": "^14.14.1",
@@ -10,10 +10,11 @@
     "tsx": "^4.5.0",
     "typescript": "^5.3.2"
   },
+  "type": "module",
   "name": "mariah-suprise-bot",
   "description": "The best way to spread Christmas cheer is singing loud for all to hear.",
   "version": "1.0.0",
-  "main": "bot.js",
+  "main": "src/bot.ts",
   "dependencies": {
     "acorn": "^8.11.2",
     "acorn-jsx": "^5.3.2",
