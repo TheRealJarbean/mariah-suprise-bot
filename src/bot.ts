@@ -1,16 +1,27 @@
 // Import the necessary discord.js classes
 import 'dotenv/config.js';
 import { Client, Events, GatewayIntentBits, VoiceState, VoiceChannel, ChannelType } from 'discord.js';
-import { DiscordGatewayAdapterCreator, joinVoiceChannel, getVoiceConnection } from '@discordjs/voice';
+import {
+    DiscordGatewayAdapterCreator,
+    joinVoiceChannel,
+    getVoiceConnection,
+    createAudioPlayer,
+    createAudioResource,
+    AudioPlayerStatus,
+} from '@discordjs/voice';
 
 // Grab Discord bot token and client ID
 const token = process.env.DISCORD_BOT_TOKEN;
 const clientID = process.env.DISCORD_CLIENT_ID;
 const min_delay: number = 10000; // Milliseconds
-const max_delay: number = 11000; // Milliseconds
+const max_delay: number = 1800000; // Milliseconds
 let channelID_with_members: string | undefined = undefined;
 let channelID_currently_in: string | undefined = undefined;
 let timeout_handle: NodeJS.Timeout | undefined = undefined;
+
+// Create audio player and define resource path
+const player = createAudioPlayer();
+const resource_path = 'song.mp3';
 
 // Check if voice channel is empty
 async function isChannelEmpty(channelID: string) {
@@ -71,6 +82,9 @@ async function startJoinTimer(guildID: string, adapter: DiscordGatewayAdapterCre
                 guildId: guildID,
                 adapterCreator: adapter,
             });
+            const resource = createAudioResource(resource_path);
+            player.play(resource);
+            connection.subscribe(player);
             channelID_currently_in = channelID_with_members;
             timeout_handle = undefined;
         }
@@ -91,6 +105,10 @@ client.once(Events.ClientReady, (c) => {
 // Voice status updates are triggered by any member connecting, disconnecting, streaming,
 // etc. to a voice channel
 client.on('voiceStateUpdate', (oldVoiceState: VoiceState, newVoiceState: VoiceState) => {
+    // If bot is disconnected, ensure audio player is stopped
+    if (newVoiceState.member?.id === clientID && newVoiceState.channel?.id === undefined) {
+        player.stop();
+    }
     // If bot is the only member of the channel, disconnect it
     const connection = getVoiceConnection(newVoiceState.guild.id);
     if (connection !== undefined && channelID_currently_in !== undefined) {
@@ -102,7 +120,7 @@ client.on('voiceStateUpdate', (oldVoiceState: VoiceState, newVoiceState: VoiceSt
             }
         });
     }
-
+    // Any voicestate change that does not involve the bot
     if (newVoiceState.member?.id !== clientID && connection === undefined) {
         if (channelID_with_members !== undefined) {
             // If channel_with_members is defined, that
@@ -143,6 +161,10 @@ client.on('voiceStateUpdate', (oldVoiceState: VoiceState, newVoiceState: VoiceSt
         const adapter = oldVoiceState.guild.voiceAdapterCreator;
         findNewChannel(guildID, adapter);
     }
+});
+
+player.on(AudioPlayerStatus.Playing, () => {
+    console.log('The audio player has started playing!');
 });
 
 // Log in to Discord with client's token
