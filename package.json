@@ -96,6 +96,7 @@
     "json-stable-stringify-without-jsonify": "^1.0.1",
     "keyv": "^4.5.4",
     "levn": "^0.4.1",
+    "libsodium-wrappers": "^0.7.13",
     "lilconfig": "^3.0.0",
     "lines-and-columns": "^1.2.4",
     "load-tsconfig": "^0.2.5",
