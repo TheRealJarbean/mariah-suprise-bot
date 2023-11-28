@@ -60,6 +60,8 @@ async function findNewChannel(guildID: string, adapter: DiscordGatewayAdapterCre
     // Otherwise, give up
     if (found_new_channel === false) {
         console.log("Couldn't find anywhere else to go :<");
+        clearTimeout(timeout_handle);
+        timeout_handle = undefined;
         channelID_with_members = undefined;
     } else if (adapter !== undefined) {
         startJoinTimer(guildID, adapter);
