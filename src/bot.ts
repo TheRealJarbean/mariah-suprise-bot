@@ -13,8 +13,8 @@ import {
 // Grab Discord bot token and client ID
 const token = process.env.DISCORD_BOT_TOKEN;
 const clientID = process.env.DISCORD_CLIENT_ID;
-const min_delay: number = 10000; // Milliseconds
-const max_delay: number = 1800000; // Milliseconds
+const min_delay: number = parseInt(process.env.DISCORD_MIN_DELAY!);
+const max_delay: number = parseInt(process.env.DISCORD_MAX_DELAY!);
 let channelID_with_members: string | undefined = undefined;
 let channelID_currently_in: string | undefined = undefined;
 let timeout_handle: NodeJS.Timeout | undefined = undefined;
@@ -174,7 +174,7 @@ player.on(AudioPlayerStatus.Playing, () => {
 player.on(AudioPlayerStatus.Idle, () => {
     if (player_active_guilds !== undefined) {
         const connection = getVoiceConnection(player_active_guilds.shift()!);
-        connection?.destroy()
+        connection?.destroy();
     }
 });
 
