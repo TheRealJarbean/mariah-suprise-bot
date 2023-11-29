@@ -1,0 +1,4 @@
+# This gitignore is here so that the folder still exists in the repo
+# This makes it easier for users to see where sounds are supposed to go
+*
+!.gitignore
