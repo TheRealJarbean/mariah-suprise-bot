@@ -7,7 +7,7 @@ import {
     getVoiceConnection,
     createAudioPlayer,
     createAudioResource,
-    AudioPlayerStatus,
+    AudioPlayerStatus
 } from '@discordjs/voice';
 
 // Grab Discord bot token and client ID
@@ -22,6 +22,7 @@ let timeout_handle: NodeJS.Timeout | undefined = undefined;
 // Create audio player and define resource path
 const player = createAudioPlayer();
 const resource_path = 'song.mp3';
+const player_active_guilds: string[] = [];
 
 // Check if voice channel is empty
 async function isChannelEmpty(channelID: string) {
@@ -87,6 +88,7 @@ async function startJoinTimer(guildID: string, adapter: DiscordGatewayAdapterCre
             const resource = createAudioResource(resource_path);
             player.play(resource);
             connection.subscribe(player);
+            player_active_guilds.push(guildID);
             channelID_currently_in = channelID_with_members;
             timeout_handle = undefined;
         }
@@ -167,6 +169,13 @@ client.on('voiceStateUpdate', (oldVoiceState: VoiceState, newVoiceState: VoiceSt
 
 player.on(AudioPlayerStatus.Playing, () => {
     console.log('The audio player has started playing!');
+});
+
+player.on(AudioPlayerStatus.Idle, () => {
+    if (player_active_guilds !== undefined) {
+        const connection = getVoiceConnection(player_active_guilds.shift()!);
+        connection?.destroy()
+    }
 });
 
 // Log in to Discord with client's token
